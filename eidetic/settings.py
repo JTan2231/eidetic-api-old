@@ -64,6 +64,15 @@ INSTALLED_APPS = [
     'webpack_loader',
 ]
 
+STATIC_URL = 'static/'
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'BUNDLE_DIR_NAME': 'api/',
+        'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json')
+    }
+}
+
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     #'whitenoise.middleware.WhiteNoiseMiddleware',

@@ -6,7 +6,7 @@ import datetime
 
 from zipfile import ZipFile
 
-from app.quickstart.util import extract_text_from_html
+from api.util import extract_text_from_html
 
 # TODO: change this to import nn
 #from .nn import create_entry_embedding, query_entries, entry_similarity_ranking, rank_with_average, threshold_query
@@ -26,8 +26,8 @@ from rest_framework.permissions import IsAuthenticated
 from knox.views import LoginView as KnoxLoginView, LogoutView as KnoxLogoutView
 from knox.auth import TokenAuthentication
 
-from app.quickstart.models import Entry, User, Collection, CollectionEntry
-from app.quickstart.serializers import EntrySerializer, UserSerializer, CollectionSerializer, CollectionEntrySerializer
+from api.models import Entry, User, Collection, CollectionEntry
+from api.serializers import EntrySerializer, UserSerializer, CollectionSerializer, CollectionEntrySerializer
 
 class AuthenticationView(KnoxLoginView):
     permission_classes = (permissions.AllowAny,)

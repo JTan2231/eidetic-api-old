@@ -7,11 +7,11 @@ import datetime
 
 import numpy as np
 
-from app.quickstart.engine.compute import rank
+from api.engine.compute import rank
 
 from zipfile import ZipFile
 
-from app.quickstart.util import extract_text_from_html
+from api.util import extract_text_from_html
 
 from django.shortcuts import render
 from django.http import FileResponse
@@ -30,8 +30,8 @@ from knox.auth import TokenAuthentication
 
 from django.db.models import F, Subquery
 
-from app.quickstart.models import Entry, User, Collection, CollectionEntry, Embedding
-from app.quickstart.serializers import EntrySerializer, UserSerializer, CollectionSerializer, CollectionEntrySerializer, EmbeddingSerializer
+from api.models import Entry, User, Collection, CollectionEntry, Embedding
+from api.serializers import EntrySerializer, UserSerializer, CollectionSerializer, CollectionEntrySerializer, EmbeddingSerializer
 
 # TODO: Comment these classes/functions
 # TODO: This file is filthy. Standardize/clean up some of this stuff

@@ -5,12 +5,14 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 module.exports = {
   entry: {
     api: './frontend/src/index.js',
-    different_page: './frontend/src/pages/index.js',
+    login: './frontend/src/pages/login/index.js',
+    new_user: './frontend/src/pages/new_user/index.js',
+    different_page: './frontend/src/pages/index/index.js',
   },
   output: {
     path: path.resolve('./api/static/api/'),
     filename: '[name]-[hash].js',
-    publicPath: 'static/api/',
+    publicPath: '',
   },
   plugins: [
     new CleanWebpackPlugin(),
