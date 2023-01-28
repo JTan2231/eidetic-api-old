@@ -1,6 +1,3 @@
-import io
-import json
-import string
 import pickle
 import requests
 import datetime
@@ -9,29 +6,14 @@ import numpy as np
 
 from api.engine.compute import rank
 
-from zipfile import ZipFile
-
 from api.util import extract_text_from_html
-
-from django.shortcuts import render
-from django.http import FileResponse
-from django.contrib.auth.hashers import make_password, check_password
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.mixins import UpdateModelMixin, DestroyModelMixin
 
-from django.contrib.auth import login
-from rest_framework import permissions
-from rest_framework.authtoken.serializers import AuthTokenSerializer
-from rest_framework.permissions import IsAuthenticated
-from knox.views import LoginView as KnoxLoginView
-from knox.auth import TokenAuthentication
-
-from django.db.models import F, Subquery
-
-from api.models import Entry, User, Collection, CollectionEntry, Embedding
-from api.serializers import EntrySerializer, UserSerializer, CollectionSerializer, CollectionEntrySerializer, EmbeddingSerializer
+from api.models import Entry, CollectionEntry, Embedding
+from api.serializers import EntrySerializer, CollectionSerializer
 
 # TODO: Comment these classes/functions
 # TODO: This file is filthy. Standardize/clean up some of this stuff
@@ -222,9 +204,13 @@ class EntryView(APIView,
 
             return Response(data, status=200)
 
+def create_new_entry(new_entry):
+    new_entry
+    return
+
 class CreateEntryView(APIView,
-                UpdateModelMixin,
-                DestroyModelMixin):
+                      UpdateModelMixin,
+                      DestroyModelMixin):
 
     #authentication_classes = (TokenAuthentication,)
     #permission_classes = (IsAuthenticated,)
@@ -232,4 +218,6 @@ class CreateEntryView(APIView,
     def post(self, request):
         new_entry = request.data
 
-        return create_entries([new_entry])
+        create_new_entry(new_entry)
+
+        return Response({ 'message': 'todo' }, status=200)

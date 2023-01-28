@@ -1,8 +1,4 @@
-import os
-for module in os.listdir(os.path.dirname(__file__)):
-    if module == '__init__.py' or module[-3:] != '.py':
-        continue
-
-    __import__(f'api.views.pages.{module[:-3]}', locals(), globals())
-
-del module
+import api.views.pages.index as index
+import api.views.pages.login as login
+import api.views.pages.new_user as new_user
+import api.views.pages.home as home

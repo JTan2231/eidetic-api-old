@@ -65,6 +65,7 @@ INSTALLED_APPS = [
 ]
 
 STATIC_URL = 'static/'
+LOGIN_URL = '/login/'
 
 WEBPACK_LOADER = {
     'DEFAULT': {
@@ -84,6 +85,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
 
 CORS_ALLOW_HEADERS = list(default_headers) + [
     'access-control-allow-headers',

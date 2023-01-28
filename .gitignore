@@ -3,4 +3,4 @@ frontend/
 node_modules/
 api/static/
 db.*
-clean.sh
+*.sh

@@ -1,8 +1,9 @@
-import os
-for module in os.listdir(os.path.dirname(__file__)):
-    if module == '__init__.py' or module[-3:] != '.py':
-        continue
-
-    __import__(f'api.views.api.{module[:-3]}', locals(), globals())
-
-del module
+import api.views.api.authentication as authentication
+import api.views.api.collection as collection
+import api.views.api.collection_entry as collection_entry
+import api.views.api.create_user as create_user
+import api.views.api.entries_by_collection as entries_by_collection
+import api.views.api.entry as entry
+import api.views.api.imports as imports
+import api.views.api.index as index
+import api.views.api.user as user
