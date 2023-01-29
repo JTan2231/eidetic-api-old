@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Entry, User, Collection, CollectionEntry, Embedding
+from .models import Entry, User, EntryLink, Embedding
 
 class BinaryField(serializers.Field):
     def to_representation(self, value):
@@ -84,40 +84,40 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('user_id', 'username', 'password')
 
-class CollectionSerializer(serializers.ModelSerializer):
+#class CollectionSerializer(serializers.ModelSerializer):
+#    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+#    centroid_entry = serializers.PrimaryKeyRelatedField(queryset=Entry.objects.all())
+#
+#    title = serializers.CharField()
+#
+#    datetime_created = serializers.DateTimeField()
+#    datetime_edited = serializers.DateTimeField()
+#
+#    def create(self, validated_data):
+#        return Collection.objects.create(
+#            user=validated_data.get('user'),
+#            centroid_entry=validated_data.get('centroid_entry'),
+#            title=validated_data.get('title'),
+#            datetime_created=validated_data.get('datetime_created'),
+#            datetime_edited=validated_data.get('datetime_edited'),
+#        )
+#
+#    class Meta:
+#        model = Collection
+#        fields = ('collection_id', 'user', 'centroid_entry', 'title', 'datetime_created', 'datetime_edited')
+
+class EntryLinkSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
-    centroid_entry = serializers.PrimaryKeyRelatedField(queryset=Entry.objects.all())
-
-    title = serializers.CharField()
-
-    datetime_created = serializers.DateTimeField()
-    datetime_edited = serializers.DateTimeField()
+    centroid = serializers.PrimaryKeyRelatedField(queryset=Entry.objects.all())
+    branch = serializers.PrimaryKeyRelatedField(queryset=Entry.objects.all())
 
     def create(self, validated_data):
-        return Collection.objects.create(
+        return EntryLink.objects.create(
             user=validated_data.get('user'),
-            centroid_entry=validated_data.get('centroid_entry'),
-            title=validated_data.get('title'),
-            datetime_created=validated_data.get('datetime_created'),
-            datetime_edited=validated_data.get('datetime_edited'),
+            centroid=validated_data.get('centroid'),
+            branch=validated_data.get('branch'),
         )
 
     class Meta:
-        model = Collection
-        fields = ('collection_id', 'user', 'centroid_entry', 'title', 'datetime_created', 'datetime_edited')
-
-class CollectionEntrySerializer(serializers.ModelSerializer):
-    entry = serializers.PrimaryKeyRelatedField(queryset=Entry.objects.all())
-    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
-    collection = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
-
-    def create(self, validated_data):
-        return CollectionEntry.objects.create(
-            entry=validated_data.get('entry'),
-            user=validated_data.get('user'),
-            collection=validated_data.get('collection')
-        )
-
-    class Meta:
-        model = CollectionEntry
-        fields = ('collection_entry_id', 'entry', 'user', 'collection')
+        model = EntryLink
+        fields = ('entry_link_id', 'user', 'centroid', 'branch')

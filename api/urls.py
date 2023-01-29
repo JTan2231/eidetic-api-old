@@ -13,13 +13,11 @@ urlpatterns = [
 
     # API
     path('api/entries/', api.entry.EntryView.as_view()),
+    path('api/entry-links/', api.entry_link.EntryLinkView.as_view()),
     path('api/create-entry/', api.entry.CreateEntryView.as_view()),
     path('api/imports/', api.imports.ImportView.as_view()),
     path('api/users/', api.user.UserView.as_view()),
     path('api/create-user/', api.create_user.CreateUserView.as_view()),
-    path('api/collections/', api.collection.CollectionView.as_view()),
-    path('api/collectionentries/', api.collection_entry.CollectionEntryView.as_view()),
-    path('api/entriesbycollection/', api.entries_by_collection.EntriesByCollectionView.as_view()),
     path('api/login/', api.authentication.AuthenticationView.as_view(), name='knox_login'),
     path('api/logout/', api.authentication.LogoutView.as_view(), name='knox_logout'),
     path('api/logoutall/', knox_views.LogoutAllView.as_view(), name='knox_logoutall'),
