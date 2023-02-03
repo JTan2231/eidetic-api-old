@@ -8,7 +8,6 @@ urlpatterns = [
     # PAGES
     path('', pages.index.index),
     path('login/', pages.login.index),
-    path('home/', pages.home.index),
     path('new_user/', pages.new_user.index),
 
     # API

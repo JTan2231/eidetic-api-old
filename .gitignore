@@ -5,3 +5,5 @@ api/static/
 db.*
 *.sh
 *.sql
+
+webpack-stats.json

@@ -35,19 +35,7 @@ class User(AbstractUser):
     class Meta:
         db_table = 'users'
 
-# TODO: the following class needs to be REWORKED for clusters
-#class Collection(models.Model):
-#    collection_id = models.AutoField(primary_key=True)
-#    user = models.ForeignKey('user', on_delete=models.CASCADE)
-#    centroid_entry = models.ForeignKey('entry', on_delete=models.CASCADE)
-#    title = models.TextField(default='untitled')
-#
-#    datetime_created = models.DateTimeField(default=now, blank=True, null=True)
-#    datetime_edited = models.DateTimeField(default=now, blank=True, null=True)
-#
-#    class Meta:
-#        db_table = 'collections'
-
+# centroid graph edges
 class EntryLink(models.Model):
     entry_link_id = models.AutoField(primary_key=True)
 
@@ -57,3 +45,34 @@ class EntryLink(models.Model):
 
     class Meta:
         db_table = 'entry_links'
+
+class Cluster(models.Model):
+    cluster_id = models.AutoField(primary_key=True)
+
+    user = models.ForeignKey('user', on_delete=models.CASCADE)
+    title = models.TextField()
+
+    class Meta:
+        db_table = 'clusters'
+
+class ClusterLink(models.Model):
+    cluster_link_id = models.AutoField(primary_key=True)
+
+    cluster = models.ForeignKey('cluster', on_delete=models.CASCADE)
+    entry = models.ForeignKey('entry', on_delete=models.CASCADE)
+    user = models.ForeignKey('user', on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'cluster_links'
+
+# TODO: change this?
+# probably dangerous but w/e for now
+class ClusteringAlgorithm(models.Model):
+    clustering_algorithm_id = models.AutoField(primary_key=True)
+
+    user = models.ForeignKey('user', on_delete=models.CASCADE)
+    algorithm = models.BinaryField(None, default=b'0')
+    cluster_id_mapping = models.BinaryField(None, default=b'0')
+
+    class Meta:
+        db_table = 'clustering_algorithms'
