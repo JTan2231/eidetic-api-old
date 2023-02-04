@@ -22,6 +22,7 @@ def create_clusters(user_id, entry_count, new_embeddings, new_entry_id):
 
     count = entry_count
     new_cluster_count = int(sqrt(count))
+    print(new_cluster_count)
 
     # check if new clusters need made
     if new_cluster_count == cluster_count:
@@ -39,7 +40,7 @@ def create_clusters(user_id, entry_count, new_embeddings, new_entry_id):
     else:
         try:
             # generate entry-average embeddings for each of the user's entries
-            embedding_queryset = Embedding.objects.filter(user_id=user_id)
+            embedding_queryset = Embedding.objects.select_related('entry').filter(user_id=user_id)
             average_dict = {}
             for embedding in embedding_queryset:
                 entry_id = embedding.entry.pk

@@ -27,7 +27,7 @@ class ImportView(APIView,
         if data['channel'] is None:
             return Response({ 'errors': 'Requires channel' }, status=400)
 
-        url = 'http://api.are.na/v2/channels/' + data['channel'] + '?per=100'
+        url = 'http://api.are.na/v2/channels/' + data['channel'] + '?per=200'
         channel = json.loads(requests.get(url).content)
 
         if channel.get('code', None) is not None and channel['code'] >= 400:

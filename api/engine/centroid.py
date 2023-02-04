@@ -25,8 +25,9 @@ def fetch_embeddings(text):
 def pad(m, l):
     return np.concatenate([m, np.zeros([max(l - m.shape[0], 0), m.shape[1]], np.float32)])
 
+# please optimize this
 def create_entry_links(centroid, embedding_matrix, threshold=0.5):
-    candidate_embeddings = Embedding.objects.filter(user=centroid.user).exclude(entry__entry_id=centroid.pk)
+    candidate_embeddings = Embedding.objects.select_related('entry', 'user').filter(user=centroid.user).exclude(entry__entry_id=centroid.pk)
 
     if len(candidate_embeddings) == 0:
         return
@@ -75,7 +76,10 @@ def create_entry_links(centroid, embedding_matrix, threshold=0.5):
 def create_entries(request, new_entries):
     user_id = request.session['user_id']
 
+    from time import time
+
     for i, new_entry in enumerate(new_entries):
+        t1 = time()
         print(f'{i+1} of {len(new_entries)}')
 
         new_entry['user'] = user_id
@@ -97,7 +101,7 @@ def create_entries(request, new_entries):
                     token_index=i,
                     embedding=pickle.dumps(embedding_matrix[i]),
                     mask=pickle.dumps(mask_matrix[i]),
-                    user=entry_object.user,
+                    user_id=user_id,
                     entry=entry_object
                 ))
 
@@ -105,10 +109,12 @@ def create_entries(request, new_entries):
 
             create_entry_links(entry_object, embedding_matrix)
 
-            entry_count = Entry.objects.all().count()
+            entry_count = Entry.objects.filter(user_id=user_id).count()
             if entry_count > 1:
                 create_clusters(user_id, entry_count, embedding_matrix, entry_object.pk)
 
         else:
             print(create_serializer.errors)
             return Response(create_serializer.errors, status=400)
+
+        print(time() - t1)
