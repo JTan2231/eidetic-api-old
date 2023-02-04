@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "this is my secret key :))))))))))))))))))))"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*',]
 
@@ -65,6 +65,7 @@ INSTALLED_APPS = [
 ]
 
 STATIC_URL = 'static/'
+STATIC_ROOT = './static/'
 LOGIN_URL = '/login/'
 
 WEBPACK_LOADER = {
