@@ -65,7 +65,7 @@ INSTALLED_APPS = [
 ]
 
 STATIC_URL = 'static/'
-STATIC_ROOT = './static/static/'
+STATIC_ROOT = '/var/app/staging/static/static'
 LOGIN_URL = '/login/'
 
 WEBPACK_LOADER = {
