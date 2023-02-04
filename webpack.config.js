@@ -8,7 +8,8 @@ module.exports = {
         login: './frontend/src/pages/login/index.js',
         new_user: './frontend/src/pages/new_user/index.js',
         different_page: './frontend/src/pages/index/index.js',
-        home: './frontend/src/pages/home/index.js',
+        entry_viewer: './frontend/src/pages/entry_viewer/index.js',
+        clusters: './frontend/src/pages/clusters/index.js',
     },
     output: {
         path: path.resolve('./api/static/api/'),

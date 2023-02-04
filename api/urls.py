@@ -6,11 +6,13 @@ from .views import api, pages
 
 urlpatterns = [
     # PAGES
-    path('', pages.index.index),
+    path('', pages.clusters.index),
     path('login/', pages.login.index),
     path('new_user/', pages.new_user.index),
+    path('<int:entry_id>/', pages.entry_viewer.index),
 
     # API
+    path('api/clusters/', api.clusters.ClusterView.as_view()),
     path('api/entries/', api.entry.EntryView.as_view()),
     path('api/entry-links/', api.entry_link.EntryLinkView.as_view()),
     path('api/create-entry/', api.entry.CreateEntryView.as_view()),

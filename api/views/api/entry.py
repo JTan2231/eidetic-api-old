@@ -22,16 +22,6 @@ class EntryView(APIView,
                 DestroyModelMixin,
                 LoginRequiredMixin):
 
-    class GetQueryParams:
-        def __init__(self, qp):
-            self.id = qp.get('id')
-            self.title = qp.get('title')
-            self.query = qp.get('query')
-            self.user_id = qp.get('user_id')
-            self.collection_id = qp.get('collection_id')
-
-            r = qp.get('return')
-            self.return_entries = r if r is not None else False
 
     def get_single_entry(self, id):
         try:
@@ -42,12 +32,13 @@ class EntryView(APIView,
         read_serializer = EntrySerializer(queryset)
         data = read_serializer.data
         data = {
+            'entry_id': data['entry_id'],
             'title': data['title'],
             'timestamp': data['timestamp'],
             'content': extract_text_from_html(read_serializer.data['content']),
         }
 
-        return Response(data, status=200)
+        return Response([data], status=200)
 
     def get_all_entries(self, request):
         """
@@ -71,10 +62,10 @@ class EntryView(APIView,
         return Response(entries, status=200)
 
     def get(self, request):
-        qp = self.GetQueryParams(request.query_params)
+        entry_id = request.query_params.get('entry_id')
 
-        if qp.id is not None:
-            return self.get_single_entry(qp.id)
+        if entry_id is not None:
+            return self.get_single_entry(entry_id)
         else:
             return self.get_all_entries(request)
 
