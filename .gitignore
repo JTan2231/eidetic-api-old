@@ -1,12 +1,9 @@
 .env/
 frontend/
 node_modules/
-api/static/
 db.*
 *.sh
 *.sql
-
-webpack-stats.json
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
