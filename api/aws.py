@@ -8,7 +8,7 @@ import numpy as np
 from eidetic.settings import DEBUG
 
 def fetch_embeddings(input_text):
-    if DEBUG:
+    if False:
         res = requests.post('http://localhost:5000/get-embedding', json={ 'text': input_text })
         body = res.json()
     else:
