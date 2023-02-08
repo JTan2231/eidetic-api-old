@@ -12,7 +12,7 @@ def fetch_embeddings(input_text):
         res = requests.post('http://localhost:5000/get-embedding', json={ 'text': input_text })
         body = res.json()
     else:
-        client = boto3.client('sagemaker-runtime')
+        client = boto3.client('sagemaker-runtime', region_name='us-east-2')
         endpoint = 'pytorch-inference-2023-02-06-16-53-37-195'
 
         print(f'contacting endpoint {endpoint}...')
