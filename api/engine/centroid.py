@@ -14,13 +14,7 @@ from rest_framework.response import Response
 from api.models import Entry, EntryLink, Embedding
 from api.serializers import EntrySerializer
 
-def fetch_embeddings(text):
-    # TODO: replace with ML_API variable
-    res = requests.post('http://localhost:5000/get-embedding', json={ 'text': text }).json()
-    embedding = np.array([np.array([float(i) for i in s]) for s in res['embedding']])
-    mask = np.array([np.array([bool(s)]) for s in res['mask']])
-
-    return embedding, mask
+from api.aws import fetch_embeddings
 
 def pad(m, l):
     return np.concatenate([m, np.zeros([max(l - m.shape[0], 0), m.shape[1]], np.float32)])
