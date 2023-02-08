@@ -4,7 +4,7 @@ from rest_framework.mixins import UpdateModelMixin, DestroyModelMixin
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from api.models import ClusterLink
+from api.models import ClusterLink, Entry
 
 class ClusterView(APIView,
                   UpdateModelMixin,
@@ -19,6 +19,18 @@ class ClusterView(APIView,
             'content': entry.content,
         }
 
+    def get_entries(self, user_id):
+        try:
+            queryset = Entry.objects.filter(user_id=user_id)
+        except Entry.DoesNotExist:
+            return Response([], status=200)
+
+        entries = [[self.entry_to_dict(e) for e in queryset]]
+        if len(entries[0]) == 0:
+            entries = []
+
+        return Response(entries, status=200)
+
     def get_clustered_entries(self, request):
         """
         Get all clusters under a user's ID
@@ -28,7 +40,10 @@ class ClusterView(APIView,
         try:
             queryset = ClusterLink.objects.select_related('cluster', 'entry').filter(user_id=user_id)
         except ClusterLink.DoesNotExist:
-            return Response([], status=200)
+            return self.get_entries(user_id)
+
+        if len(queryset) == 0:
+            return self.get_entries(user_id)
 
         clustered_entries = { cl.cluster.pk: [] for cl in queryset }
         for cl in queryset:

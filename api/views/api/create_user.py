@@ -30,6 +30,9 @@ class CreateUserView(APIView,
                     user_object = create_serializer.save()
                     login(request, user_object)
 
+                    request.session['username'] = user_object.username
+                    request.session['user_id'] = user_object.user_id
+
                     return Response(request.data, status=200)
 
             except Exception as e:
