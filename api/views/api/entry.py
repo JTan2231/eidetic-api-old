@@ -78,3 +78,13 @@ class CreateEntryView(APIView,
         create_entries(request, [new_entry])
 
         return Response({ 'message': 'todo' }, status=200)
+
+class DeleteEntryView(APIView,
+                      LoginRequiredMixin):
+    def post(self, request):
+        try:
+            Entry.objects.get(pk=request.data['entry_id'], user_id=request.session['user_id']).delete()
+
+            return Response({}, status=200)
+        except Exception as e:
+            return Response({ 'errors': e }, status=400)
