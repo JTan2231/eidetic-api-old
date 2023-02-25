@@ -10,6 +10,7 @@ module.exports = {
         different_page: './frontend/src/pages/index/index.js',
         entry_viewer: './frontend/src/pages/entry_viewer/index.js',
         clusters: './frontend/src/pages/clusters/index.js',
+        profile: './frontend/src/pages/profile/index.js',
     },
     output: {
         path: path.resolve('./api/static/api/'),
