@@ -25,17 +25,17 @@ class EntryView(APIView,
 
     def get_single_entry(self, id):
         try:
-            queryset = Entry.objects.get(entry_id=id)
+            queryset = Entry.objects.select_related('user').get(entry_id=id)
         except Entry.DoesNotExist:
             return Response({ 'errors': 'This entry does not exist' }, status=400)
 
-        read_serializer = EntrySerializer(queryset)
-        data = read_serializer.data
+        data = queryset
         data = {
-            'entry_id': data['entry_id'],
-            'title': data['title'],
-            'timestamp': data['timestamp'],
-            'content': extract_text_from_html(read_serializer.data['content']),
+            'entry_id': data.entry_id,
+            'username': data.user.username,
+            'title': data.title,
+            'timestamp': data.timestamp,
+            'content': extract_text_from_html(data.content),
         }
 
         return Response([data], status=200)
