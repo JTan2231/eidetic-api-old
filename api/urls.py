@@ -19,6 +19,8 @@ urlpatterns = [
     path('api/delete-entry/', api.entry.DeleteEntryView.as_view()),
     path('api/users/', api.user.UserView.as_view()),
     path('api/create-user/', api.create_user.CreateUserView.as_view()),
+    path('api/follow/', api.follow.FollowView.as_view()),
+    path('api/feed/', api.feed.FeedView.as_view()),
     path('api/login/', api.authentication.AuthenticationView.as_view()),
     path('api/logout/', api.authentication.LogoutView.as_view()),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -6,3 +6,5 @@ import api.views.api.imports as imports
 import api.views.api.index as index
 import api.views.api.user as user
 import api.views.api.clusters as clusters
+import api.views.api.follow as follow
+import api.views.api.feed as feed

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Entry, User, EntryLink, Embedding, Cluster, ClusterLink
+from .models import Entry, User, EntryLink, Embedding, Cluster, ClusterLink, Follow
 
 class BinaryField(serializers.Field):
     def to_representation(self, value):
@@ -129,3 +129,17 @@ class ClusterLinkSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClusterLink
         fields = ('cluster_link_id', 'cluster', 'entry', 'user')
+
+class Follow(serializers.ModelSerializer):
+    follower = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    followee = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+
+    def create(self, validated_data):
+        return Follow.objects.create(
+            follower=validated_data.get('follower'),
+            followee=validated_data.get('followee'),
+        )
+
+    class Meta:
+        model = Follow
+        fields = ('follow_id', 'follower', 'followee')

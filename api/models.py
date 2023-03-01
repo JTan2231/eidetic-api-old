@@ -76,3 +76,12 @@ class ClusteringAlgorithm(models.Model):
 
     class Meta:
         db_table = 'clustering_algorithms'
+
+class Follow(models.Model):
+    follow_id = models.AutoField(primary_key=True)
+
+    follower = models.ForeignKey('user', on_delete=models.CASCADE, related_name='follower')
+    followee = models.ForeignKey('user', on_delete=models.CASCADE, related_name='followee')
+
+    class Meta:
+        db_table = 'follow'
