@@ -1,4 +1,4 @@
-from    api.util import extract_text_from_html
+from api.util import extract_text_from_html
 
 # TODO: change this to import nn
 #from .nn import create_entry_embedding, query_entries, entry_similarity_ranking, rank_with_average, threshold_query
@@ -16,6 +16,8 @@ from api.serializers import EntrySerializer
 def cutoff(text, cut=250):
     return text[:cut] + '...' if len(text) > cut else text
 
+def privacy_filter(entry, user_id):
+    return not entry.private or (entry.private and entry.user_id == user_id)
 
 class EntryLinkView(APIView,
                     UpdateModelMixin,
@@ -28,13 +30,14 @@ class EntryLinkView(APIView,
         except EntryLink.DoesNotExist:
             return Response([], status=200)
 
-        entries = [ce.branch for ce in ce_queryset]
+        entries = [ce.branch for ce in ce_queryset if privacy_filter(ce.branch, request.session['user_id'])]
         read_serializer = EntrySerializer(entries, many=True)
 
         def data_map(dm):
             return {
                 'entry_id': dm['entry_id'],
                 'title': dm['title'],
+                'private': dm['private'],
                 'timestamp': dm['timestamp'],
                 'content': extract_text_from_html(dm['content'])
             }

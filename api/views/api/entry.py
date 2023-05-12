@@ -23,20 +23,34 @@ class EntryView(APIView,
                 LoginRequiredMixin):
 
 
-    def get_single_entry(self, id):
+    def get_single_entry(self, request, id):
         try:
             queryset = Entry.objects.select_related('user').get(entry_id=id)
         except Entry.DoesNotExist:
             return Response({ 'errors': 'This entry does not exist' }, status=400)
 
         data = queryset
-        data = {
-            'entry_id': data.entry_id,
-            'username': data.user.username,
-            'title': data.title,
-            'timestamp': data.timestamp,
-            'content': extract_text_from_html(data.content),
-        }
+
+        if not data.private or (data.private and data.user.user_id == request.session['user_id']):
+            data = {
+                'entry_id': data.entry_id,
+                'username': data.user.username,
+                'private': data.private,
+                'title': data.title,
+                'timestamp': data.timestamp,
+                'content': data.content,
+                'display': True,
+            }
+        else:
+            data = {
+                'entry_id': data.entry_id,
+                'username': '',
+                'private': data.private,
+                'title': 'Private Entry',
+                'timestamp': '',
+                'content': "This entry is private.",
+                'display': False,
+            }
 
         return Response([data], status=200)
 
@@ -54,9 +68,31 @@ class EntryView(APIView,
         read_serializer = EntrySerializer(queryset, many=True)
         entries = [{
             'entry_id': data['entry_id'],
+            'private': data['private'],
             'title': data['title'],
             'timestamp': data['timestamp'],
-            'content': extract_text_from_html(data['content']),
+            'content': data['content'],
+        } for data in read_serializer.data]
+
+        return Response(entries, status=200)
+
+    def get_public_entries(self, request):
+        """
+        Get all public entries under a user's ID
+        """
+
+        user_id = request.session['user_id']
+        try:
+            queryset = Entry.objects.filter(user_id=user_id, private=False)
+        except Entry.DoesNotExist:
+            return Response([], status=200)
+
+        read_serializer = EntrySerializer(queryset, many=True)
+        entries = [{
+            'entry_id': data['entry_id'],
+            'title': data['title'],
+            'timestamp': data['timestamp'],
+            'content': data['content'],
         } for data in read_serializer.data]
 
         return Response(entries, status=200)
@@ -65,9 +101,23 @@ class EntryView(APIView,
         entry_id = request.query_params.get('entry_id')
 
         if entry_id is not None:
-            return self.get_single_entry(entry_id)
+            return self.get_single_entry(request, entry_id)
         else:
             return self.get_all_entries(request)
+
+    def patch(self, request):
+        entry_id = request.data['entry_id']
+        private = request.data['private']
+
+        try:
+            entry = Entry.objects.select_related('user').get(entry_id=entry_id)
+        except Entry.DoesNotExist:
+            return Response({ 'errors': 'This entry does not exist' }, status=400)
+
+        entry.private = private
+        entry.save()
+
+        return Response({}, status=204)
 
 class CreateEntryView(APIView,
                       LoginRequiredMixin):
@@ -77,7 +127,7 @@ class CreateEntryView(APIView,
 
         create_entries(request, [new_entry])
 
-        return Response({ 'message': 'todo' }, status=200)
+        return Response({}, status=204)
 
 class DeleteEntryView(APIView,
                       LoginRequiredMixin):
@@ -85,6 +135,6 @@ class DeleteEntryView(APIView,
         try:
             Entry.objects.get(pk=request.data['entry_id'], user_id=request.session['user_id']).delete()
 
-            return Response({}, status=200)
+            return Response({}, status=204)
         except Exception as e:
             return Response({ 'errors': e }, status=400)

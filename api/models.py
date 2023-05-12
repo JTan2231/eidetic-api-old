@@ -1,4 +1,3 @@
-import datetime
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.timezone import now
@@ -11,7 +10,7 @@ class Entry(models.Model):
     content = models.TextField()
 
     timestamp = models.DateTimeField(default=now, blank=True, null=True)
-
+    private = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'entries'

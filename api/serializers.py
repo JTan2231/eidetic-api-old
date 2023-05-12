@@ -12,6 +12,7 @@ class EntrySerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     content = serializers.CharField()
     title = serializers.CharField()
+    private = serializers.BooleanField()
 
     timestamp = serializers.DateTimeField()
 
@@ -21,6 +22,7 @@ class EntrySerializer(serializers.ModelSerializer):
             content=validated_data.get('content'),
             timestamp=validated_data.get('timestamp'),
             title=validated_data.get('title'),
+            private=validated_data.get('private'),
         )
 
     def update(self, instance, validated_data):
@@ -28,6 +30,7 @@ class EntrySerializer(serializers.ModelSerializer):
         instance.raw_html = validated_data.get('content', instance.content)
         instance.timestamp = validated_data.get('timestamp', instance.timestamp)
         instance.title = validated_data.get('title', instance.title)
+        instance.private = validated_data.get('private', instance.private)
 
         instance.save()
 
@@ -35,7 +38,7 @@ class EntrySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Entry
-        fields = ('entry_id', 'user', 'content', 'timestamp', 'title',)
+        fields = ('entry_id', 'user', 'content', 'timestamp', 'title', 'private',)
 
 class EmbeddingSerializer(serializers.ModelSerializer):
     token_index = serializers.IntegerField()

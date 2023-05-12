@@ -14,6 +14,7 @@ class ClusterView(APIView,
     def entry_to_dict(self, entry):
         return {
             'entry_id': entry.entry_id,
+            'private': entry.private,
             'title': entry.title,
             'timestamp': entry.timestamp,
             'content': entry.content,
@@ -46,6 +47,7 @@ class ClusterView(APIView,
                 return Response(['NOUSER'], status=400)
         else:
             user_id = request.session['user_id']
+
         try:
             queryset = ClusterLink.objects.select_related('cluster', 'entry').filter(user_id=user_id)
         except ClusterLink.DoesNotExist:

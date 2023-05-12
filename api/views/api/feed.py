@@ -15,7 +15,7 @@ class FeedView(APIView,
             following = Follow.objects.filter(follower_id=follower_id).values_list('followee_id')
             following = [f[0] for f in following]
 
-            entries = Entry.objects.filter(user_id__in=following).values_list('entry_id', 'title', 'content', 'timestamp', 'user__username').order_by('-timestamp')[:50]
+            entries = Entry.objects.filter(user_id__in=following, private=False).values_list('entry_id', 'title', 'content', 'timestamp', 'user__username').order_by('-timestamp')[:50]
             entries = [{
                 'entry_id': e[0],
                 'title': e[1],

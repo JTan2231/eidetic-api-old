@@ -1,5 +1,4 @@
 import pickle
-import requests
 import datetime
 
 import numpy as np
