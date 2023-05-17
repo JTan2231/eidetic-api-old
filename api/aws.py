@@ -1,13 +1,27 @@
 import ast
 import json
 import boto3
+import openai
 import requests
 
 import numpy as np
 
 from eidetic.settings import DEBUG
 
+OPENAI = True
+
 def fetch_embeddings(input_text):
+    if OPENAI:
+        response = openai.Embedding.create(
+            input=input_text,
+            model="text-embedding-ada-002"
+        )
+
+        embeddings = np.array(response['data'][0]['embedding'])[np.newaxis, ...]
+        embeddings /= np.linalg.norm(embeddings)
+
+        return embeddings, [[True]]
+
     if DEBUG:
         res = requests.post('http://localhost:5000/get-embedding', json={ 'text': input_text })
         body = res.json()

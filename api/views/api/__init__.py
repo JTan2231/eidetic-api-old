@@ -8,3 +8,4 @@ import api.views.api.user as user
 import api.views.api.clusters as clusters
 import api.views.api.follow as follow
 import api.views.api.feed as feed
+import api.views.api.openai as openai

@@ -13,7 +13,10 @@ def score(query, embed, mask):
 
     return distance
 
+# query.shape == (token_count, embed_dim)
+# embeddings.shape == (entry_count, embed_dim, token_count)
 def rank(query, embeddings, masks, return_scores=False):
+    print(query.shape, embeddings.shape, masks.shape)
     scores = [score(query, embed, mask) for embed, mask in zip(embeddings, masks)]
     ranks = sorted([(s, i) for i, s in enumerate(scores)], key=lambda p: p[0], reverse=True)
 

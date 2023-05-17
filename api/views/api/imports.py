@@ -37,6 +37,7 @@ class ImportView(APIView,
             'content': c['content'],
             'user': user_id,
             'title': '',
+            'private': False,
         } for c in channel['contents'] if c['class'] == 'Text']
 
         return create_entries(request, contents)
