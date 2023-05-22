@@ -5,8 +5,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.mixins import UpdateModelMixin, DestroyModelMixin
 
-from api.models import Embedding
-from api.openai_api import get_command
+from api.models import Embedding, Entry
+from api.openai_api import get_command, get_topic, get_summary
 from api.aws import fetch_embeddings
 from api.engine.compute import rank
 
@@ -25,6 +25,7 @@ class OpenAIView(APIView,
                  UpdateModelMixin,
                  DestroyModelMixin):
 
+    # get all entry ids relating to the topic
     def collect(self, user_id, topic):
         topic_embedding, _ = fetch_embeddings(topic)
 
@@ -66,9 +67,6 @@ class OpenAIView(APIView,
         except Embedding.DoesNotExist:
             return []
 
-        print(embedding_matrix.shape)
-        print(id_list)
-
         embedding_matrix = np.transpose(embedding_matrix, [0, 2, 1])
         mask_matrix = np.transpose(mask_matrix, [0, 2, 1])
 
@@ -79,21 +77,49 @@ class OpenAIView(APIView,
             if scores[i][0] > 0.80:
                 relevant_entry_ids.append(id_list[scores[i][1]])
 
-
         return relevant_entry_ids
 
     def aggregate(self, user_id, topic):
-        # TODO
-        return
+        entry_ids = self.collect(user_id, topic)
+
+        aggregated_output = ""
+        if len(entry_ids) > 0:
+            try:
+                entries = Entry.objects.filter(pk__in=entry_ids).values('content')
+            except Entry.DoesNotExist:
+                return aggregated_output
+
+            for entry in entries:
+                aggregated_output += entry['content'] + '\n\n'
+
+        return aggregated_output
     
     def summarize(self, user_id, topic):
-        # TODO
+        content = self.aggregate(user_id, topic)
+        summary = get_summary(content)
+
         return
 
     def post(self, request):
         prompt = request.data['prompt']
+        user_id = request.session['user_id']
 
-        #command = get_command(prompt)
-        entry_ids = self.collect(request.session['user_id'], prompt)
+        command = get_command(prompt)
+        topic = get_topic(prompt)
 
-        return Response(entry_ids, status=200)
+        mapped_cmd = CMD_MAP[command]
+
+        print(mapped_cmd, topic)
+
+        if mapped_cmd == 'collect':
+            data = self.collect(user_id, topic)
+        elif mapped_cmd == 'aggregate':
+            data = self.aggregate(user_id, topic)
+            print(data)
+            data = []
+        elif mapped_cmd == 'summarize':
+            data = self.summarize(user_id, topic)
+            print(data)
+            data = []
+
+        return Response(data, status=200)
